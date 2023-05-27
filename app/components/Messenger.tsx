@@ -9,7 +9,11 @@ import { useEffect, useState } from "react";
 import ChatHistory from "./ChatHistory";
 import UserInput from "./UserInput";
 
-export default function Messenger() {
+type MessengerProps = {
+  setSummary: React.Dispatch<React.SetStateAction<string>>;
+};
+
+export default function Messenger({ setSummary }: MessengerProps) {
   const [userMessage, setUserMessage] = useState<string>("");
   const [messages, setMessages] = useState<ChatCompletionResponseMessage[]>([
     { role: ChatCompletionResponseMessageRoleEnum.Assistant, content: "" },
@@ -27,6 +31,38 @@ export default function Messenger() {
     fetchFirstMessage().then((message) => setMessages([message]));
   }, []);
 
+  async function getAgentResponse(messages: ChatCompletionResponseMessage[]) {
+    const agentResponse: CreateChatCompletionResponse = await fetch(
+      "/api/chat",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ messages }),
+      }
+    ).then((response) => response.json());
+
+    const message = agentResponse.choices[0].message!;
+    return message;
+  }
+
+  async function getAgentSummary(messages: ChatCompletionResponseMessage[]) {
+    const agentResponse: CreateChatCompletionResponse = await fetch(
+      "/api/summary",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ messages }),
+      }
+    ).then((response) => response.json());
+
+    const summary = agentResponse.choices[0].message?.content!;
+    return summary;
+  }
+
   async function onSubmit(event?: React.FormEvent<HTMLFormElement>) {
     event?.preventDefault();
 
@@ -40,16 +76,13 @@ export default function Messenger() {
     setMessages(newMessages);
     setUserMessage("");
 
-    const response: CreateChatCompletionResponse = await fetch("/api/chat", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ messages: newMessages }),
-    }).then((response) => response.json());
-    const message = response.choices[0].message!;
-    newMessages = [...newMessages, message];
-    setMessages(newMessages);
+    Promise.all([
+      getAgentResponse(newMessages),
+      getAgentSummary(newMessages),
+    ]).then(([message, summary]) => {
+      setMessages([...newMessages, message]);
+      setSummary(summary);
+    });
   }
 
   return (

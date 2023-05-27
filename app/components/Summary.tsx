@@ -1,22 +1,26 @@
-const exampleTopics = [
-  "Rust",
-  "Labyrinths in Medieval Europe",
-  "How to make a website",
-];
+import { useMemo } from "react";
+
+type SummaryProps = {
+  summary: string;
+};
 
 /*
  * This component summarizes topics you've discussed with the agent
- * TODO: use actual topics obtained by asking the agent to summarize
  */
-export default function Summary() {
+export default function Summary({ summary }: SummaryProps) {
+  const topics = useMemo(() => summary.split("|"), [summary]);
+
   return (
-    <div className="mx-5">
-      <h2 className="text-2xl font-bold">We&apos;ve discussed</h2>
-      <ul className="list-inside list-disc">
-        {exampleTopics.map((topic) => (
-          <li key={topic}>{topic}</li>
-        ))}
-      </ul>
+    <div>
+      <h2 className="mb-3 text-3xl font-bold">Topics We&apos;ve Discussed</h2>
+      {topics.length <= 1 && <div>{summary}</div>}
+      {topics.length > 1 && (
+        <ul className="list-inside list-disc">
+          {topics.map((topic, index) => (
+            <li key={index}>{topic}</li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
