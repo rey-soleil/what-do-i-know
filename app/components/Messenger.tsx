@@ -27,8 +27,8 @@ export default function Messenger() {
     fetchFirstMessage().then((message) => setMessages([message]));
   }, []);
 
-  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  async function onSubmit(event?: React.FormEvent<HTMLFormElement>) {
+    event?.preventDefault();
 
     let newMessages = [
       ...messages,

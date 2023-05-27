@@ -3,7 +3,7 @@
 type UserInputProps = {
   userMessage: string;
   setUserMessage: React.Dispatch<React.SetStateAction<string>>;
-  onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
+  onSubmit: (event?: React.FormEvent<HTMLFormElement>) => void;
 };
 
 export default function UserInput({
@@ -11,6 +11,17 @@ export default function UserInput({
   setUserMessage,
   onSubmit,
 }: UserInputProps) {
+  // If the user hits enter, submit the form
+  // If they hit shift+enter, add a newline
+  function attemptToSubmitOnEnter(
+    event: React.KeyboardEvent<HTMLTextAreaElement>
+  ) {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      onSubmit();
+    }
+  }
+
   return (
     <form
       className="flex flex-row items-center space-x-4 p-4 outline"
@@ -20,6 +31,7 @@ export default function UserInput({
         className="w-full outline"
         value={userMessage}
         onChange={({ target }) => setUserMessage(target.value)}
+        onKeyDown={attemptToSubmitOnEnter}
       ></textarea>
       <input
         type="submit"
