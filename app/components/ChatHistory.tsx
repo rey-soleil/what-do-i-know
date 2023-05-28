@@ -4,6 +4,7 @@ import {
   ChatCompletionResponseMessage,
   ChatCompletionResponseMessageRoleEnum,
 } from "openai";
+import { useEffect, useRef } from "react";
 import TypewriterComponent from "typewriter-effect";
 
 type ChatHistoryProps = {
@@ -17,8 +18,21 @@ export default function ChatHistory({
   messages,
   setMessages,
 }: ChatHistoryProps) {
+  const messengerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const element = messengerRef.current;
+    if (element) {
+      element.scrollTop = element.scrollHeight;
+    }
+  }, [messages]);
+
   return (
-    <div className="flex flex-col overflow-y-scroll">
+    <div
+      className="flex max-h-[60vh] flex-col overflow-y-scroll"
+      id="messenger"
+      ref={messengerRef}
+    >
       {messages?.map((message, index) => (
         <div
           key={index}
