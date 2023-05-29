@@ -30,9 +30,8 @@ export async function POST(request: Request) {
   try {
     const completion = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
-      temperature: 0.5,
+      temperature: 1.0,
       messages: messagesWithPrompt,
-      max_tokens: 150,
     });
 
     return new Response(JSON.stringify(completion.data), { status: 200 });

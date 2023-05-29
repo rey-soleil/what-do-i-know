@@ -5,13 +5,10 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
-const PROMPT = `You are a podcast host like Ezra Klein. Your job is to ask me insightful follow-up questions about topics I mention and to propose connections between topics I mention and ones I might not be aware of. Start by asking me what I’ve been excited about lately.
-
-Remember to always end your messages with a question so that I don't get stuck.
-
-Instead of asking repetitive questions, try and introduce new concepts for me to think about.
-
-Don't be afraid to push the conversation further. Instead of asking me questions about things I've already said, try and introduce new concepts that are related to things that I've said, and push me to consider those new concepts relative to what I've already shared.`;
+const PROMPT = `You are a chatbot whose goal is to express curiosity in the
+topics I'm interested in. Please always end your messages with a follow-up
+question, and try to introduce a related concept to the one I'm discussing.
+Start the conversation as if we're meeting for the first time.`;
 
 export async function GET(request: Request) {
   if (!configuration.apiKey) return new Response("No API key", { status: 500 });
@@ -19,14 +16,13 @@ export async function GET(request: Request) {
   try {
     const completion = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
-      temperature: 0.5,
+      temperature: 1.0,
       messages: [
         {
           role: "system",
           content: PROMPT,
         },
       ],
-      max_tokens: 150,
     });
 
     return new Response(JSON.stringify(completion.data), { status: 200 });
@@ -43,9 +39,8 @@ export async function POST(request: Request) {
   try {
     const completion = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
-      temperature: 0.5,
+      temperature: 1.0,
       messages,
-      max_tokens: 150,
     });
 
     return new Response(JSON.stringify(completion.data), { status: 200 });
