@@ -9,15 +9,12 @@ export default function Home() {
     "Start talking to the agent to get a summary of your conversation!"
   );
   return (
-    <main className="flex h-full w-full flex-col items-center pb-16">
-      <h1 className="p-10 text-4xl font-bold">What Do I Know?</h1>
-      <div className="flex h-full w-full flex-col p-5 md:flex-row">
-        <div className="m-3 h-full md:w-1/2">
-          <Messenger setSummary={setSummary} />
-        </div>
-        <div className="m-3 md:w-1/2">
-          <Summary summary={summary} />
-        </div>
+    <main className="flex h-full w-full flex-col md:flex-row">
+      <div className="h-full p-5 md:w-1/2">
+        <Messenger setSummary={setSummary} />
+      </div>
+      <div className="m-3 p-5 md:w-1/2">
+        <Summary summary={summary} />
       </div>
     </main>
   );

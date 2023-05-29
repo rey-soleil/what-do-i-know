@@ -29,7 +29,7 @@ export default function ChatHistory({
 
   return (
     <div
-      className="flex max-h-[60vh] flex-col overflow-y-scroll"
+      className="flex h-screen flex-col overflow-y-scroll"
       id="messenger"
       ref={messengerRef}
     >
