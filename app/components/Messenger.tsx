@@ -24,6 +24,7 @@ export default function Messenger({ setSummary }: MessengerProps) {
     const response: CreateChatCompletionResponse = await fetch("/api/chat")
       .then((response) => response.json())
       .catch((error) => console.log(error));
+
     const message = response.choices[0].message!;
     return message;
   }
@@ -41,13 +42,20 @@ export default function Messenger({ setSummary }: MessengerProps) {
         role: ChatCompletionResponseMessageRoleEnum.User,
         content: userMessage,
       },
+      {
+        role: ChatCompletionResponseMessageRoleEnum.Assistant,
+        content: "",
+      },
     ];
     setMessages(newMessages);
     setUserMessage("");
 
     Promise.all([getAgentResponse(newMessages), getAgentSummary(newMessages)])
       .then(([message, summary]) => {
-        setMessages([...newMessages, message]);
+        setMessages(() => {
+          newMessages[newMessages.length - 1] = message;
+          return newMessages;
+        });
         setSummary(summary);
       })
       .catch(([messageError, summaryError]) => {
