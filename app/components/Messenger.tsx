@@ -59,8 +59,8 @@ export default function Messenger({ setSummary }: MessengerProps) {
         setSummary(summary);
       })
       .catch(([messageError, summaryError]) => {
-        console.log(messageError);
-        console.log(summaryError);
+        console.error(messageError);
+        console.error(summaryError);
       });
   }
 
