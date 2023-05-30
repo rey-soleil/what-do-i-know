@@ -45,13 +45,15 @@ export default function Messenger({ setSummary }: MessengerProps) {
     setMessages(newMessages);
     setUserMessage("");
 
-    Promise.all([
-      getAgentResponse(newMessages),
-      getAgentSummary(newMessages),
-    ]).then(([message, summary]) => {
-      setMessages([...newMessages, message]);
-      setSummary(summary);
-    });
+    Promise.all([getAgentResponse(newMessages), getAgentSummary(newMessages)])
+      .then(([message, summary]) => {
+        setMessages([...newMessages, message]);
+        setSummary(summary);
+      })
+      .catch(([messageError, summaryError]) => {
+        console.log(messageError);
+        console.log(summaryError);
+      });
   }
 
   return (
