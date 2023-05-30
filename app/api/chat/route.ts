@@ -62,7 +62,3 @@ export async function POST(request: Request) {
     return new Response(JSON.stringify(error), { status: 500 });
   }
 }
-
-function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
