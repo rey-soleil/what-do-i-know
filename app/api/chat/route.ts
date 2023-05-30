@@ -57,7 +57,7 @@ export async function POST(request: Request) {
       messages,
     });
 
-    sleep(5000); // Wait for 5 seconds before responding
+    await sleep(5000); // Wait for 5 seconds before responding
 
     return new Response(JSON.stringify(completion.data), { status: 200 });
   } catch (error) {
