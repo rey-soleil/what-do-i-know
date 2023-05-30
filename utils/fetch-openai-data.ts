@@ -22,10 +22,6 @@ export async function getAgentResponse(
         }
       ).then((response) => response.json());
 
-      throw new Error(
-        `Max retry limit exceeded. Unable to get agent response.`
-      );
-
       const message = agentResponse.choices[0].message!;
       return message;
     } catch (error) {
