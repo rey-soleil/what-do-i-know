@@ -1,14 +1,4 @@
-import firebase_app from "@/utils/firebase-config";
-import { getAuth } from "firebase/auth";
 import {
-  addDoc,
-  collection,
-  doc,
-  getFirestore,
-  setDoc,
-} from "firebase/firestore";
-import {
-  ChatCompletionResponseMessage,
   ChatCompletionResponseMessageRoleEnum,
   Configuration,
   OpenAIApi,
@@ -18,9 +8,6 @@ const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 });
 const openai = new OpenAIApi(configuration);
-
-const db = getFirestore(firebase_app);
-const auth = getAuth(firebase_app);
 
 const PROMPT = `You are a chatbot named Ezra whose goal is to express 
 curiosity in the topics I'm interested in. Please always end your messages with
@@ -69,9 +56,8 @@ export async function GET(request: Request) {
  * The message and response are also saved to Firestore.
  */
 export async function POST(request: Request) {
-  const { messages, firestoreId } = await request.json();
+  const { messages } = await request.json();
   if (!messages) return new Response("No messages", { status: 400 });
-  if (!firestoreId) return new Response("No id", { status: 400 });
   if (!configuration.apiKey) return new Response("No API key", { status: 500 });
 
   // The agent sometimes forgets to ask a question, so we remind it here.
@@ -87,49 +73,8 @@ export async function POST(request: Request) {
       messages,
     });
 
-    addMessagesToFirestore(
-      [
-        // Remove the last message, which is the question reminder.
-        ...messages.slice(0, -1),
-        completion.data.choices[0].message,
-      ],
-      firestoreId
-    );
-
     return new Response(JSON.stringify(completion.data), { status: 200 });
   } catch (error) {
     return new Response(JSON.stringify(error), { status: 500 });
-  }
-}
-
-export async function addFirstMessageToFirestore(
-  message: ChatCompletionResponseMessage,
-  name?: string
-) {
-  const conversationsCollection = collection(db, "conversations");
-  return await addDoc(conversationsCollection, {
-    message,
-    name,
-    timestamp: Date.now(),
-  });
-}
-
-async function addMessagesToFirestore(
-  messages: ChatCompletionResponseMessage[],
-  firestoreId: string
-) {
-  const documentRef = doc(
-    collection(db, "continuing_conversations"),
-    firestoreId
-  );
-  try {
-    await setDoc(
-      documentRef,
-      { messages, timestamp: Date.now() },
-      { merge: true }
-    );
-    console.log("Document updated successfully");
-  } catch (error) {
-    console.error("Error updating document:", error);
   }
 }
