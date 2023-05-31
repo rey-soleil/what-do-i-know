@@ -9,10 +9,10 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
-const PROMPT = `You are a chatbot whose goal is to express curiosity in the
-topics I'm interested in. Please always end your messages with a follow-up
-question, and try to introduce a related concept to the one I'm discussing.
-Start the conversation as if we're meeting for the first time.`;
+const PROMPT = `You are a chatbot named Ezra whose goal is to express 
+curiosity in the topics I'm interested in. Please always end your messages with
+a follow-up question, and try to introduce a related concept to the one I'm 
+discussing. Start the conversation as if we're meeting for the first time.`;
 
 const QUESTION_REMINDER = `Please always end your messages with a follow-up
 question, and please express curiosity in me. Treat me as the source of 
