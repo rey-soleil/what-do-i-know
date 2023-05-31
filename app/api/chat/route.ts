@@ -46,7 +46,7 @@ export async function GET(request: Request) {
       ],
     });
 
-    await addMessagesToFirestore([completion.data.choices[0].message!]);
+    addMessagesToFirestore([completion.data.choices[0].message!]);
 
     return new Response(JSON.stringify(completion.data), { status: 200 });
   } catch (error) {
@@ -78,7 +78,7 @@ export async function POST(request: Request) {
       messages,
     });
 
-    await addMessagesToFirestore([
+    addMessagesToFirestore([
       // Remove the last message, which is the question reminder.
       ...messages.slice(0, -1),
       completion.data.choices[0].message,
