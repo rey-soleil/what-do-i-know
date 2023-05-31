@@ -7,31 +7,45 @@ import {
   CreateChatCompletionResponse,
 } from "openai";
 import { useEffect, useState } from "react";
+import { addFirstMessageToFirestore } from "../api/chat/route";
 import ChatHistory from "./ChatHistory";
 import UserInput from "./UserInput";
 
 type MessengerProps = {
   setSummary: React.Dispatch<React.SetStateAction<string>>;
+  isDialogOpen: boolean;
+  name: string;
 };
 
-export default function Messenger({ setSummary }: MessengerProps) {
+export default function Messenger({
+  setSummary,
+  isDialogOpen,
+  name,
+}: MessengerProps) {
   const [userMessage, setUserMessage] = useState<string>("");
   const [messages, setMessages] = useState<ChatCompletionResponseMessage[]>([
     { role: ChatCompletionResponseMessageRoleEnum.Assistant, content: "" },
   ]);
+  const [firestoreId, setFirestoreId] = useState<string>("");
 
   async function fetchFirstMessage() {
-    const response: CreateChatCompletionResponse = await fetch("/api/chat")
+    // Get the first message from openai
+    const url = `/api/chat?name=${encodeURIComponent(name)}`;
+    const response: CreateChatCompletionResponse = await fetch(url)
       .then((response) => response.json())
       .catch((error) => console.log(error));
-
     const message = response.choices[0].message!;
-    return message;
+    setMessages([message]);
+
+    // Add the first message to firestore
+    const firestoreReponse = await addFirstMessageToFirestore(message, name);
+    setFirestoreId(firestoreReponse.id);
   }
 
   useEffect(() => {
-    fetchFirstMessage().then((message) => setMessages([message]));
-  }, []);
+    if (isDialogOpen) return;
+    fetchFirstMessage();
+  }, [isDialogOpen]);
 
   async function onSubmit(event?: React.FormEvent<HTMLFormElement>) {
     event?.preventDefault();
@@ -50,7 +64,7 @@ export default function Messenger({ setSummary }: MessengerProps) {
     setMessages(newMessages);
     setUserMessage("");
 
-    Promise.all([getAgentResponse(newMessages), getAgentSummary(newMessages)])
+    Promise.all([getAgentResponse(newMessages, firestoreId), getAgentSummary(newMessages)])
       .then(([message, summary]) => {
         setMessages(() => {
           newMessages[newMessages.length - 1] = message;

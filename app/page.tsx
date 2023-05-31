@@ -7,15 +7,27 @@ import MindMap from "./components/MindMap";
 import WelcomeDialog from "./components/WelcomeDialog";
 
 export default function Home() {
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(true);
+  const [name, setName] = useState<string>("");
+
   const [summary, setSummary] = useState<string>(
     "Start talking to Ezra to build up this mind map!"
   );
 
   return (
     <main className="flex h-full w-full flex-col md:flex-row">
-      <WelcomeDialog />
+      <WelcomeDialog
+        name={name}
+        setName={setName}
+        isDialogOpen={isDialogOpen}
+        setIsDialogOpen={setIsDialogOpen}
+      />
       <div className="h-full p-5 md:w-1/2">
-        <Messenger setSummary={setSummary} />
+        <Messenger
+          setSummary={setSummary}
+          isDialogOpen={isDialogOpen}
+          name={name}
+        />
       </div>
       <div className="h-screen p-5 md:h-full md:w-1/2">
         <ReactFlowProvider>
