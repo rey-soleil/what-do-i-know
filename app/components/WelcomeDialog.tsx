@@ -27,7 +27,12 @@ export default function WelcomeDialog() {
       <DialogContent>
         <div className="flex flex-col">
           {WELCOME_CONTENT.map(({ icon, text }, index) => (
-            <div className="mb-5 flex items-center" key={index}>
+            <div
+              className={`flex items-center ${
+                index !== WELCOME_CONTENT.length && "mb-5"
+              }`}
+              key={index}
+            >
               <div className="mx-4 text-xl">{icon}</div>
               <h3>{text}</h3>
             </div>
