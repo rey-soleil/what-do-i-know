@@ -8,7 +8,7 @@ import WelcomeDialog from "./components/WelcomeDialog";
 
 export default function Home() {
   const [summary, setSummary] = useState<string>(
-    "Start talking to Ezra to get a summary of your conversation!"
+    "Start talking to Ezra to build up this mind map!"
   );
 
   return (
