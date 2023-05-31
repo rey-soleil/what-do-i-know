@@ -1,6 +1,12 @@
 import firebase_app from "@/utils/firebase-config";
 import { getAuth } from "firebase/auth";
-import { addDoc, collection, getFirestore } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  getFirestore,
+  setDoc,
+} from "firebase/firestore";
 import {
   ChatCompletionResponseMessage,
   ChatCompletionResponseMessageRoleEnum,
@@ -35,18 +41,20 @@ export async function GET(request: Request) {
   if (!configuration.apiKey) return new Response("No API key", { status: 500 });
 
   try {
+    const name = new URL(request.url).searchParams.get("name") || undefined;
+    const content = `${PROMPT} ${name ? `My name is ${name}.` : ""}`;
+
     const completion = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
       temperature: 1.0,
       messages: [
         {
           role: ChatCompletionResponseMessageRoleEnum.System,
-          content: PROMPT,
+          content,
         },
       ],
+      user: name,
     });
-
-    addMessagesToFirestore([completion.data.choices[0].message!]);
 
     return new Response(JSON.stringify(completion.data), { status: 200 });
   } catch (error) {
@@ -61,8 +69,9 @@ export async function GET(request: Request) {
  * The message and response are also saved to Firestore.
  */
 export async function POST(request: Request) {
-  const { messages } = await request.json();
+  const { messages, firestoreId } = await request.json();
   if (!messages) return new Response("No messages", { status: 400 });
+  if (!firestoreId) return new Response("No id", { status: 400 });
   if (!configuration.apiKey) return new Response("No API key", { status: 500 });
 
   // The agent sometimes forgets to ask a question, so we remind it here.
@@ -78,11 +87,14 @@ export async function POST(request: Request) {
       messages,
     });
 
-    addMessagesToFirestore([
-      // Remove the last message, which is the question reminder.
-      ...messages.slice(0, -1),
-      completion.data.choices[0].message,
-    ]);
+    addMessagesToFirestore(
+      [
+        // Remove the last message, which is the question reminder.
+        ...messages.slice(0, -1),
+        completion.data.choices[0].message,
+      ],
+      firestoreId
+    );
 
     return new Response(JSON.stringify(completion.data), { status: 200 });
   } catch (error) {
@@ -90,9 +102,34 @@ export async function POST(request: Request) {
   }
 }
 
-async function addMessagesToFirestore(
-  messages: ChatCompletionResponseMessage[]
+export async function addFirstMessageToFirestore(
+  message: ChatCompletionResponseMessage,
+  name?: string
 ) {
-  const messagesCollection = collection(db, "messages");
-  return await addDoc(messagesCollection, { messages, timestamp: Date.now() });
+  const conversationsCollection = collection(db, "conversations");
+  return await addDoc(conversationsCollection, {
+    message,
+    name,
+    timestamp: Date.now(),
+  });
+}
+
+async function addMessagesToFirestore(
+  messages: ChatCompletionResponseMessage[],
+  firestoreId: string
+) {
+  const documentRef = doc(
+    collection(db, "continuing_conversations"),
+    firestoreId
+  );
+  try {
+    await setDoc(
+      documentRef,
+      { messages, timestamp: Date.now() },
+      { merge: true }
+    );
+    console.log("Document updated successfully");
+  } catch (error) {
+    console.error("Error updating document:", error);
+  }
 }
