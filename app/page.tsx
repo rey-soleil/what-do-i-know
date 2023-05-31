@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { ReactFlowProvider } from "reactflow";
 import Messenger from "./components/Messenger";
-import Summary from "./components/Summary";
+import MindMap from "./components/MindMap";
 import WelcomeDialog from "./components/WelcomeDialog";
 
 export default function Home() {
@@ -16,8 +17,10 @@ export default function Home() {
       <div className="h-full p-5 md:w-1/2">
         <Messenger setSummary={setSummary} />
       </div>
-      <div className="m-3 p-5 md:w-1/2">
-        <Summary summary={summary} />
+      <div className="h-screen p-5 md:h-full md:w-1/2">
+        <ReactFlowProvider>
+          <MindMap summary={summary} />
+        </ReactFlowProvider>
       </div>
     </main>
   );
