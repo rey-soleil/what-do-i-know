@@ -33,7 +33,7 @@ export default function WelcomeDialog() {
               }`}
               key={index}
             >
-              <div className="mx-4 text-xl">{icon}</div>
+              <div className="mx-4">{icon}</div>
               <h3>{text}</h3>
             </div>
           ))}
