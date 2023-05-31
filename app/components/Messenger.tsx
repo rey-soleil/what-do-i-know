@@ -48,6 +48,7 @@ export default function Messenger({
   useEffect(() => {
     if (isDialogOpen) return;
     fetchFirstMessage();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isDialogOpen]);
 
   async function onSubmit(event?: React.FormEvent<HTMLFormElement>) {
