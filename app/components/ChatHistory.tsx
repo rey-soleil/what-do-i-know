@@ -12,11 +12,13 @@ type ChatHistoryProps = {
   setMessages: React.Dispatch<
     React.SetStateAction<ChatCompletionResponseMessage[]>
   >;
+  isDialogOpen: boolean;
 };
 
 export default function ChatHistory({
   messages,
   setMessages,
+  isDialogOpen,
 }: ChatHistoryProps) {
   const messengerRef = useRef<HTMLDivElement>(null);
 

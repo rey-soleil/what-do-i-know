@@ -4,8 +4,7 @@ import {
 } from "openai";
 
 export async function getAgentResponse(
-  messages: ChatCompletionResponseMessage[],
-  firestoreId: string
+  messages: ChatCompletionResponseMessage[]
 ) {
   const maxRetries = 3;
   let retryCount = 0;
@@ -19,7 +18,7 @@ export async function getAgentResponse(
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ messages, firestoreId }),
+          body: JSON.stringify({ messages }),
         }
       ).then((response) => response.json());
 

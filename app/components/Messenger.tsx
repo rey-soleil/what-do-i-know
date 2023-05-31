@@ -2,12 +2,15 @@
 
 import { getAgentResponse, getAgentSummary } from "@/utils/fetch-openai-data";
 import {
+  addFirstMessageToFirestore,
+  addMessagesToFirestore,
+} from "@/utils/firestore";
+import {
   ChatCompletionResponseMessage,
   ChatCompletionResponseMessageRoleEnum,
   CreateChatCompletionResponse,
 } from "openai";
 import { useEffect, useState } from "react";
-import { addFirstMessageToFirestore } from "../api/chat/route";
 import ChatHistory from "./ChatHistory";
 import UserInput from "./UserInput";
 
@@ -64,16 +67,24 @@ export default function Messenger({
     setMessages(newMessages);
     setUserMessage("");
 
-    Promise.all([getAgentResponse(newMessages, firestoreId), getAgentSummary(newMessages)])
-      .then(([message, summary]) => {
+    await getAgentResponse(newMessages)
+      .then((message) => {
         setMessages(() => {
           newMessages[newMessages.length - 1] = message;
           return newMessages;
         });
+      })
+      .catch((messageError) => {
+        console.error(messageError);
+      });
+
+    await addMessagesToFirestore(newMessages, firestoreId);
+
+    await getAgentSummary(newMessages)
+      .then((summary) => {
         setSummary(summary);
       })
-      .catch(([messageError, summaryError]) => {
-        console.error(messageError);
+      .catch((summaryError) => {
         console.error(summaryError);
       });
   }
