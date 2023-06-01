@@ -1,11 +1,10 @@
 import {
   ChatCompletionResponseMessage,
+  ChatCompletionResponseMessageRoleEnum,
   CreateChatCompletionResponse,
 } from "openai";
 
-export async function getAgentResponse(
-  messages: ChatCompletionResponseMessage[]
-) {
+export async function getResponse(messages: ChatCompletionResponseMessage[]) {
   const maxRetries = 3;
   let retryCount = 0;
 
@@ -30,13 +29,14 @@ export async function getAgentResponse(
       await sleep(1000); // Wait for 1 second before retrying
     }
   }
-
-  throw new Error(`Max retry limit exceeded. Unable to get agent response.`);
+  return {
+    content:
+      "Sorry, I'm having some trouble understanding. Could you say that again?",
+    role: ChatCompletionResponseMessageRoleEnum.Assistant,
+  };
 }
 
-export async function getAgentSummary(
-  messages: ChatCompletionResponseMessage[]
-) {
+export async function getSummary(messages: ChatCompletionResponseMessage[]) {
   const maxRetries = 3;
   let retryCount = 0;
 
@@ -60,6 +60,7 @@ export async function getAgentSummary(
       retryCount++;
       await sleep(1000); // Wait for 1 second before retrying
     }
+    return "Keep talking to Ezra to build up this mind map!";
   }
 
   throw new Error(`Max retry limit exceeded. Unable to get agent summary.`);
