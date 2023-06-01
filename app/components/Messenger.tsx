@@ -1,6 +1,6 @@
 "use client";
 
-import { getAgentResponse, getAgentSummary } from "@/utils/fetch-openai-data";
+import { getResponse, getSummary } from "@/utils/fetch-openai-data";
 import {
   addFirstMessageToFirestore,
   addMessagesToFirestore,
@@ -68,7 +68,7 @@ export default function Messenger({
     setMessages(newMessages);
     setUserMessage("");
 
-    await getAgentResponse(newMessages)
+    await getResponse(newMessages)
       .then((message) => {
         setMessages(() => {
           newMessages[newMessages.length - 1] = message;
@@ -81,7 +81,7 @@ export default function Messenger({
 
     await addMessagesToFirestore(newMessages, firestoreId);
 
-    await getAgentSummary(newMessages)
+    await getSummary(newMessages)
       .then((summary) => {
         setSummary(summary);
       })
