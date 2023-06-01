@@ -22,14 +22,14 @@ export default function Home() {
         isDialogOpen={isDialogOpen}
         setIsDialogOpen={setIsDialogOpen}
       />
-      <div className="h-full p-5 md:w-1/2">
+      <div className="h-full md:w-1/2 md:p-5">
         <Messenger
           setSummary={setSummary}
           isDialogOpen={isDialogOpen}
           name={name}
         />
       </div>
-      <div className="h-screen p-5 md:h-full md:w-1/2">
+      <div className="hidden h-screen p-5 md:flex md:h-full md:w-1/2">
         <ReactFlowProvider>
           <MindMap summary={summary} />
         </ReactFlowProvider>
