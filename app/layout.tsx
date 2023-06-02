@@ -12,8 +12,8 @@ const merriweather = Merriweather({
 });
 
 export const metadata = {
-  title: "What Do I Know?",
-  description: "a chatbot that asks *you* the questions",
+  title: "Ezra",
+  description: "A chatbot that asks all the right questions",
 };
 
 export default function RootLayout({
