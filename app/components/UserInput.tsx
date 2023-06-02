@@ -28,15 +28,15 @@ export default function UserInput({
       onSubmit={onSubmit}
     >
       <textarea
-        className="w-full outline"
+        className="w-full font-mono outline"
         value={userMessage}
         onChange={({ target }) => setUserMessage(target.value)}
         onKeyDown={attemptToSubmitOnEnter}
       ></textarea>
       <input
         type="submit"
-        value="submit"
-        className="h-fit bg-slate-200 p-2"
+        value="CHAT"
+        className="h-fit bg-bright-lilac p-2 font-mono outline"
       ></input>
     </form>
   );

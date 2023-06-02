@@ -31,8 +31,8 @@ export default function MindMap({ summary }: MindMapProps) {
   }, [nodes]);
 
   return (
-    <div className="h-screen w-full md:h-full">
-      <ReactFlow nodes={nodes} fitView>
+    <div className="h-screen w-full bg-light-red outline md:h-full">
+      <ReactFlow nodes={nodes} fitView className="font-mono outline-light-red">
         <Background />
         <Controls />
       </ReactFlow>

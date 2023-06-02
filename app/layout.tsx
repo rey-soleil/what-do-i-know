@@ -1,8 +1,15 @@
 import { Analytics } from "@vercel/analytics/react";
-import { Inter } from "next/font/google";
+import { Inter, Merriweather } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
+
+const merriweather = Merriweather({
+  subsets: ["latin"],
+  display: "swap",
+  weight: "300",
+  variable: "--font-merriweather",
+});
 
 export const metadata = {
   title: "What Do I Know?",
@@ -16,7 +23,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${inter.className} ${merriweather.variable}`}>
         {children}
         <Analytics />
       </body>
