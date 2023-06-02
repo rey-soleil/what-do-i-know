@@ -36,7 +36,7 @@ export default function UserInput({
       <input
         type="submit"
         value="CHAT"
-        className="h-fit bg-bright-lilac p-2 font-mono outline"
+        className="h-fit bg-bright-lilac p-2 font-mono outline hover:cursor-pointer"
       ></input>
     </form>
   );
