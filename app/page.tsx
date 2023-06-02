@@ -10,9 +10,7 @@ export default function Home() {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(true);
   const [name, setName] = useState<string>("");
 
-  const [summary, setSummary] = useState<string>(
-    "Start talking to Ezra to build up this mind map!"
-  );
+  const [summary, setSummary] = useState<string>("");
 
   return (
     <main className="flex h-full w-full flex-col bg-green-sheen md:flex-row">

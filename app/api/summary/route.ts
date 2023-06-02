@@ -9,10 +9,46 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
-const PROMPT = `Please summarize everything we've discussed in one or two words
-each. Please split each topic with the pipe (|). There should be no more topics
-than there were user messages, and if you have nothing to summarize, just 
-return "".`;
+const PROMPT = `You are going to extract all of the topics discussed in the preceding conversation and identify connections between them. For example, if we discussed apple, magenta, and orange, your output would take the form
+{
+  nodes: [
+    {
+      id: "node-1",
+      data: {
+        label: "apple",
+      },
+    },
+    {
+      id: "node-2",
+      data: {
+        label: "magenta",
+      },
+    },
+    {
+      id: "node-3",
+      data: {
+        label: "orange",
+      },
+    },
+  ]
+  edges: [
+    {
+      id: "edge-1",
+      source: "node-1",
+      target: "node-2",
+      label: "fruits",
+    },
+    {
+      id: "edge-2",
+      source: "node-2",
+      target: "node-3",
+      label: "colors",
+    }
+  ]
+}
+You do not need to find edges between every node. In fact, only about 25% of node pairs should have edges between them. You should
+ONLY return the nodes and edges object. Do not provide any supplementary information.
+`;
 
 export async function POST(request: Request) {
   const { messages } = await request.json();
@@ -30,7 +66,7 @@ export async function POST(request: Request) {
   try {
     const completion = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
-      temperature: 1.0,
+      temperature: 0.5,
       messages: messagesWithPrompt,
     });
 
