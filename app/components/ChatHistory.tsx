@@ -43,7 +43,7 @@ export default function ChatHistory({
         >
           {message?.role ===
             ChatCompletionResponseMessageRoleEnum.Assistant && (
-            <div className="w-max-2xl rounded-sm bg-slate-500 p-2 text-white">
+            <div className="max-w-[90%] bg-cornsilk p-2 font-mono font-medium outline">
               <TypewriterComponent
                 options={{
                   strings: message.content,
@@ -54,7 +54,7 @@ export default function ChatHistory({
             </div>
           )}
           {message?.role === ChatCompletionResponseMessageRoleEnum.User && (
-            <div className="w-max-2xl rounded-sm bg-blue-500 p-2 text-white">
+            <div className="max-w-[90%] bg-orange-yellow p-2 font-mono font-medium outline">
               {message.content}
             </div>
           )}

@@ -15,7 +15,7 @@ export default function Home() {
   );
 
   return (
-    <main className="flex h-full w-full flex-col md:flex-row">
+    <main className="flex h-full w-full flex-col bg-green-sheen md:flex-row">
       <WelcomeDialog
         name={name}
         setName={setName}

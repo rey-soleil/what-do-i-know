@@ -1,13 +1,7 @@
 import HubIcon from "@mui/icons-material/Hub";
 import PersonSearchIcon from "@mui/icons-material/PersonSearch";
 import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  TextField,
-} from "@mui/material";
+import { Dialog, DialogContent } from "@mui/material";
 
 const WELCOME_CONTENT = [
   {
@@ -38,28 +32,36 @@ export default function WelcomeDialog({
   setIsDialogOpen,
 }: WelcomeDialogProps) {
   return (
-    <Dialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
-      <DialogContent>
+    <Dialog
+      open={isDialogOpen}
+      onClose={() => setIsDialogOpen(false)}
+      className="bg-green-sheen"
+    >
+      <DialogContent className="bg-cornsilk">
         <div className="flex flex-col">
           {WELCOME_CONTENT.map(({ icon, text }, index) => (
-            <div className="mb-5 flex items-center" key={index}>
+            <div className="mb-5 flex items-center font-mono" key={index}>
               <div className="mx-4">{icon}</div>
               <h3>{text}</h3>
             </div>
           ))}
         </div>
-        <TextField
-          value={name}
-          onChange={({ target }) => setName(target.value)}
-          label="Your Name"
-          fullWidth
-          variant="standard"
-          autoFocus
-        />
+        <div className="flex flex-row items-center space-x-4 p-4">
+          <input
+            type="text"
+            placeholder="Your name"
+            className="h-10 w-full px-2 font-mono outline"
+            value={name}
+            onChange={({ target }) => setName(target.value)}
+          ></input>
+          <button
+            className="h-fit bg-bright-lilac p-2 px-3 font-mono outline hover:cursor-pointer"
+            onClick={() => setIsDialogOpen(false)}
+          >
+            GO
+          </button>
+        </div>
       </DialogContent>
-      <DialogActions>
-        <Button onClick={() => setIsDialogOpen(false)}>Continue</Button>
-      </DialogActions>
     </Dialog>
   );
 }
