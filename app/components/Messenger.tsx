@@ -36,7 +36,7 @@ export default function Messenger({
   }, []);
 
   // TODO: refactor this so it's broken up into smaller functions
-  async function onSubmit(event?: React.FormEvent<HTMLFormElement>) {
+  async function submitUserMessage(event?: React.FormEvent<HTMLFormElement>) {
     event?.preventDefault();
 
     let newMessages = [
@@ -81,7 +81,7 @@ export default function Messenger({
       <UserInput
         userMessage={userMessage}
         setUserMessage={setUserMessage}
-        onSubmit={onSubmit}
+        submitUserMessage={submitUserMessage}
       />
     </div>
   );
