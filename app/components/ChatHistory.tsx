@@ -1,13 +1,12 @@
 "use client";
 
-import ThumbDownOutlinedIcon from "@mui/icons-material/ThumbDownOutlined";
-import ThumbUpOutlinedIcon from "@mui/icons-material/ThumbUpOutlined";
 import {
   ChatCompletionResponseMessage,
   ChatCompletionResponseMessageRoleEnum,
 } from "openai";
 import { useEffect, useRef, useState } from "react";
 import TypewriterComponent from "typewriter-effect";
+import Feedback from "./Feedback";
 
 type ChatHistoryProps = {
   messages: ChatCompletionResponseMessage[];
@@ -60,12 +59,7 @@ export default function ChatHistory({
                   delay: 0,
                 }}
               />
-              {message.content !== "" && (
-                <div className="absolute bottom-0 right-0 translate-x-1/2 translate-y-1/2 transform bg-cornsilk outline">
-                  <ThumbUpOutlinedIcon />
-                  <ThumbDownOutlinedIcon />
-                </div>
-              )}
+              <Feedback message={message} />
             </div>
           )}
           {message?.role === ChatCompletionResponseMessageRoleEnum.User && (
