@@ -53,10 +53,11 @@ export async function POST(request: Request) {
   if (!configuration.apiKey) return new Response("No API key", { status: 500 });
 
   // The agent sometimes forgets to ask a question, so we remind it here.
-  messages[messages.length - 1] = {
+  messages.push({
     role: ChatCompletionResponseMessageRoleEnum.System,
     content: QUESTION_REMINDER,
-  };
+  });
+  console.log({ messages });
 
   try {
     const completion = await openai.createChatCompletion({

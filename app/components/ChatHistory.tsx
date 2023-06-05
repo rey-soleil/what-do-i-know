@@ -4,24 +4,21 @@ import {
   ChatCompletionResponseMessage,
   ChatCompletionResponseMessageRoleEnum,
 } from "openai";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import TypewriterComponent from "typewriter-effect";
 import Feedback from "./Feedback";
 
 type ChatHistoryProps = {
   messages: ChatCompletionResponseMessage[];
-  setMessages: React.Dispatch<
-    React.SetStateAction<ChatCompletionResponseMessage[]>
-  >;
+  isLoadingResponse: boolean;
 };
 
 /*
- * This component is responsible for rendering the chat history.
- * It is a scrollable div that contains the messages.
+ * This component renders the chat history between Ezra and the user.
  */
 export default function ChatHistory({
   messages,
-  setMessages,
+  isLoadingResponse,
 }: ChatHistoryProps) {
   const messengerRef = useRef<HTMLDivElement>(null);
 
@@ -66,6 +63,19 @@ export default function ChatHistory({
           )}
         </div>
       ))}
+      {isLoadingResponse && (
+        <div key={"loading"} className={`flex w-full p-4`}>
+          <div className="relative max-w-[90%] bg-cornsilk p-2 font-mono font-medium outline">
+            <TypewriterComponent
+              options={{
+                strings: "",
+                autoStart: true,
+                delay: 0,
+              }}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

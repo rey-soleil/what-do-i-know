@@ -5,6 +5,7 @@ import {
   addDoc,
   collection,
   doc,
+  getDoc,
   getFirestore,
   setDoc,
 } from "firebase/firestore";
@@ -27,17 +28,25 @@ export async function addFirstMessageToFirestore(
 }
 
 export async function addMessagesToFirestore(
-  messages: ChatCompletionResponseMessage[],
-  firestoreId: string
+  newMessages: ChatCompletionResponseMessage[],
+  firestoreId: string,
+  responseTime: number
 ) {
   const documentRef = doc(
     collection(db, "continuing_conversations"),
     firestoreId
   );
   try {
+    const docSnapshot = await getDoc(documentRef);
+    const existingMessages = docSnapshot.exists()
+      ? docSnapshot.data().messages
+      : [];
+    const mergedMessages = [...existingMessages, ...newMessages];
+    mergedMessages[mergedMessages.length - 1].responseTime = responseTime;
+
     await setDoc(
       documentRef,
-      { messages, timestamp: Date.now() },
+      { messages: mergedMessages, timestamp: Date.now() },
       { merge: true }
     );
   } catch (error) {

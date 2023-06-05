@@ -1,8 +1,7 @@
 "use client";
 
-import { getResponse, getSummary } from "@/utils/fetch-openai-data";
 import { addMessagesToFirestore } from "@/utils/firestore";
-import { fetchFirstMessage } from "@/utils/messenger";
+import { fetchFirstMessage, fetchResponse } from "@/utils/messenger";
 import {
   ChatCompletionResponseMessage,
   ChatCompletionResponseMessageRoleEnum,
@@ -23,15 +22,15 @@ export default function Messenger({
   name,
 }: MessengerProps) {
   const [userMessage, setUserMessage] = useState<string>("");
-  const [messages, setMessages] = useState<ChatCompletionResponseMessage[]>([
-    { role: ChatCompletionResponseMessageRoleEnum.Assistant, content: "" },
-  ]);
+  const [messages, setMessages] = useState<ChatCompletionResponseMessage[]>([]);
   const [firestoreId, setFirestoreId] = useState<string>("");
+  const [isLoadingResponse, setIsLoadingResponse] = useState<boolean>(true);
 
   useEffect(() => {
     fetchFirstMessage().then(({ message, firestoreId }) => {
       message && setMessages([message]);
       firestoreId && setFirestoreId(firestoreId);
+      setIsLoadingResponse(false);
     });
   }, []);
 
@@ -39,49 +38,40 @@ export default function Messenger({
   async function submitUserMessage(event?: React.FormEvent<HTMLFormElement>) {
     event?.preventDefault();
 
-    let newMessages = [
+    let messagesWithUserInput = [
       ...messages,
       {
         role: ChatCompletionResponseMessageRoleEnum.User,
         content: userMessage,
       },
-      {
-        role: ChatCompletionResponseMessageRoleEnum.Assistant,
-        content: "",
-      },
     ];
-    setMessages(newMessages);
+    setMessages(messagesWithUserInput);
     setUserMessage("");
 
-    await getResponse(newMessages)
-      .then((message) => {
-        setMessages(() => {
-          newMessages[newMessages.length - 1] = message;
-          return newMessages;
-        });
-      })
-      .catch((messageError) => {
-        console.error(messageError);
-      });
+    setIsLoadingResponse(true);
+    const start = Date.now();
+    const response = await fetchResponse(messagesWithUserInput);
+    const responseTime = Date.now() - start;
+    setIsLoadingResponse(false);
 
-    await addMessagesToFirestore(newMessages, firestoreId);
+    const messagesWithBoth = [...messagesWithUserInput, response];
+    setMessages([...messagesWithUserInput, response]);
 
-    await getSummary(newMessages)
-      .then((summary) => {
-        setSummary(summary);
-      })
-      .catch((summaryError) => {
-        console.error(summaryError);
-      });
+    await addMessagesToFirestore(
+      messagesWithBoth.slice(-2),
+      firestoreId,
+      responseTime
+    );
   }
 
   return (
     <div className="flex h-full flex-col justify-between overflow-hidden bg-light-red outline">
-      <ChatHistory messages={messages} setMessages={setMessages} />
+      <ChatHistory messages={messages} isLoadingResponse={isLoadingResponse} />
       <UserInput
         userMessage={userMessage}
         setUserMessage={setUserMessage}
         submitUserMessage={submitUserMessage}
+        isLoadingResponse={isLoadingResponse}
       />
     </div>
   );
