@@ -1,6 +1,10 @@
-import { CreateChatCompletionResponse } from "openai";
+import {
+  ChatCompletionResponseMessage,
+  CreateChatCompletionResponse,
+} from "openai";
 import { addFirstMessageToFirestore } from "./firestore";
 
+// This function fetches Ezra's first message
 export async function fetchFirstMessage() {
   try {
     const start = Date.now();
@@ -11,11 +15,32 @@ export async function fetchFirstMessage() {
     const end = Date.now();
     const responseTime = (end - start) / 1000;
 
-    const firestoreReponse = await addFirstMessageToFirestore(message, responseTime);
+    const firestoreReponse = await addFirstMessageToFirestore(
+      message,
+      responseTime
+    );
     const firestoreId = firestoreReponse.id;
     return { message, firestoreId };
   } catch (error) {
     console.error(error);
   }
   return { message: null, firestoreId: null };
+}
+
+// This function fetches Ezra's response to the user's message
+export async function fetchResponse(messages: ChatCompletionResponseMessage[]) {
+  try {
+    const data = await fetch("/api/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ messages }),
+    }).then((data) => data.json());
+    const response = data.choices[0].message!;
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+  return "";
 }
