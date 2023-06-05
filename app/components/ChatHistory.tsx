@@ -6,7 +6,7 @@ import {
   ChatCompletionResponseMessage,
   ChatCompletionResponseMessageRoleEnum,
 } from "openai";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import TypewriterComponent from "typewriter-effect";
 
 type ChatHistoryProps = {
@@ -24,6 +24,9 @@ export default function ChatHistory({
   messages,
   setMessages,
 }: ChatHistoryProps) {
+  const [isPositiveFeedbackModalOpen, setIsPositiveFeedbackModalOpen] =
+    useState(false);
+
   const messengerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -49,7 +52,7 @@ export default function ChatHistory({
         >
           {message?.role ===
             ChatCompletionResponseMessageRoleEnum.Assistant && (
-            <div className="max-w-[90%] bg-cornsilk p-2 font-mono font-medium outline">
+            <div className="relative max-w-[90%] bg-cornsilk p-2 font-mono font-medium outline">
               <TypewriterComponent
                 options={{
                   strings: message.content,
@@ -58,7 +61,7 @@ export default function ChatHistory({
                 }}
               />
               {message.content !== "" && (
-                <div className="text-right">
+                <div className="absolute bottom-0 right-0 translate-x-1/2 translate-y-1/2 transform bg-cornsilk outline">
                   <ThumbUpOutlinedIcon />
                   <ThumbDownOutlinedIcon />
                 </div>
