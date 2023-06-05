@@ -27,7 +27,7 @@ export default function FeedbackDialog({
         </div>
         <textarea
           placeholder="What didn't you like about this answer?"
-          className="h-15 w-96 p-2 font-mono outline"
+          className="h-15 w-full p-2 font-mono outline"
           value={feedback?.explanation}
           onChange={({ target }) =>
             setFeedback({
