@@ -1,3 +1,4 @@
+import { FeedbackType } from "@/app/components/Feedback";
 import firebase_app from "@/utils/firebase-config";
 import { getAuth } from "firebase/auth";
 import {
@@ -8,6 +9,7 @@ import {
   setDoc,
 } from "firebase/firestore";
 import { ChatCompletionResponseMessage } from "openai";
+
 const db = getFirestore(firebase_app);
 const auth = getAuth(firebase_app);
 
@@ -37,8 +39,19 @@ export async function addMessagesToFirestore(
       { messages, timestamp: Date.now() },
       { merge: true }
     );
-    console.log("Document updated successfully");
   } catch (error) {
     console.error("Error updating document:", error);
   }
+}
+
+export async function addFeedbackToFirestore(
+  message: ChatCompletionResponseMessage,
+  feedback: FeedbackType
+) {
+  const feedbackCollection = collection(db, "feedback");
+  return await addDoc(feedbackCollection, {
+    message,
+    feedback,
+    timestamp: Date.now(),
+  });
 }

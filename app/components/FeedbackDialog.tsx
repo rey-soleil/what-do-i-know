@@ -1,9 +1,12 @@
+import { addFeedbackToFirestore } from "@/utils/firestore";
 import { Dialog, DialogContent } from "@mui/material";
+import { ChatCompletionResponseMessage } from "openai";
 import { FeedbackPolarity, FeedbackType } from "./Feedback";
 
 type FeedbackDialogProps = {
   isDialogOpen: boolean;
   setIsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  message: ChatCompletionResponseMessage;
   feedback: FeedbackType | null;
   setFeedback: React.Dispatch<React.SetStateAction<FeedbackType | null>>;
 };
@@ -11,12 +14,13 @@ type FeedbackDialogProps = {
 export default function FeedbackDialog({
   isDialogOpen,
   setIsDialogOpen,
+  message,
   feedback,
   setFeedback,
 }: FeedbackDialogProps) {
   function submitFeedback() {
     setIsDialogOpen(false);
-    // TODO: send feedback to firestore
+    addFeedbackToFirestore(message, feedback!);
   }
 
   return (
