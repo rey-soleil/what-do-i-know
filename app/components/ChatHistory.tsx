@@ -1,5 +1,7 @@
 "use client";
 
+import ThumbDownOutlinedIcon from "@mui/icons-material/ThumbDownOutlined";
+import ThumbUpOutlinedIcon from "@mui/icons-material/ThumbUpOutlined";
 import {
   ChatCompletionResponseMessage,
   ChatCompletionResponseMessageRoleEnum,
@@ -14,6 +16,10 @@ type ChatHistoryProps = {
   >;
 };
 
+/*
+ * This component is responsible for rendering the chat history.
+ * It is a scrollable div that contains the messages.
+ */
 export default function ChatHistory({
   messages,
   setMessages,
@@ -51,6 +57,12 @@ export default function ChatHistory({
                   delay: 0,
                 }}
               />
+              {message.content !== "" && (
+                <div className="text-right">
+                  <ThumbUpOutlinedIcon />
+                  <ThumbDownOutlinedIcon />
+                </div>
+              )}
             </div>
           )}
           {message?.role === ChatCompletionResponseMessageRoleEnum.User && (
