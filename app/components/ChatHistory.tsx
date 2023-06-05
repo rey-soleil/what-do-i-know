@@ -23,9 +23,6 @@ export default function ChatHistory({
   messages,
   setMessages,
 }: ChatHistoryProps) {
-  const [isPositiveFeedbackModalOpen, setIsPositiveFeedbackModalOpen] =
-    useState(false);
-
   const messengerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

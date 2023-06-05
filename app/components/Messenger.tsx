@@ -45,6 +45,7 @@ export default function Messenger({
     setFirestoreId(firestoreReponse.id);
   }
 
+  // TODO: refactor this so it's broken up into smaller functions
   useEffect(() => {
     if (isDialogOpen) return;
     fetchFirstMessage();
@@ -91,7 +92,7 @@ export default function Messenger({
   }
 
   return (
-    <div className="flex h-full flex-col justify-between overflow-hidden outline bg-light-red">
+    <div className="flex h-full flex-col justify-between overflow-hidden bg-light-red outline">
       <ChatHistory messages={messages} setMessages={setMessages} />
       <UserInput
         userMessage={userMessage}
