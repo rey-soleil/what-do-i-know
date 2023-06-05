@@ -51,7 +51,10 @@ export default function Feedback({ message }: FeedbackProps) {
   }
 
   return (
-    <div className="absolute bottom-0 right-0 translate-x-1/2 translate-y-1/2 transform bg-cornsilk outline">
+    <div
+      className="absolute bottom-0 right-0 translate-x-1/2 translate-y-1/2 transform bg-cornsilk outline"
+      title="Provide feedback"
+    >
       <FeedbackDialog
         isDialogOpen={isDialogOpen}
         setIsDialogOpen={setIsDialogOpen}
