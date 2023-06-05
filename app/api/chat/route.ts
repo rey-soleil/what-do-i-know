@@ -19,28 +19,23 @@ question, and please express curiosity in me. Treat me as the source of
 knowledge.`;
 
 /*
- * This function is called when the user first opens the chatbot.
- * It sends a prompt to OpenAI's API, which returns a response.
- * The response is then sent to the user.
- * The response is also saved to Firestore.
+ * This gets the first message from Ezra.
  */
 export async function GET(request: Request) {
   if (!configuration.apiKey) return new Response("No API key", { status: 500 });
 
   try {
-    const name = new URL(request.url).searchParams.get("name") || undefined;
-    const content = `${PROMPT} ${name ? `My name is ${name}.` : ""}`;
+    const messages = [
+      {
+        role: ChatCompletionResponseMessageRoleEnum.System,
+        content: PROMPT,
+      },
+    ];
 
     const completion = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
       temperature: 1.0,
-      messages: [
-        {
-          role: ChatCompletionResponseMessageRoleEnum.System,
-          content,
-        },
-      ],
-      user: name,
+      messages,
     });
 
     return new Response(JSON.stringify(completion.data), { status: 200 });
@@ -50,10 +45,7 @@ export async function GET(request: Request) {
 }
 
 /*
- * This function is called when the user sends a message to the chatbot.
- * The message is sent to OpenAI's API, which returns a response.
- * The response is then sent to the user.
- * The message and response are also saved to Firestore.
+ * This gets all subsequent responses from Ezra.
  */
 export async function POST(request: Request) {
   const { messages } = await request.json();
