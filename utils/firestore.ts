@@ -15,12 +15,13 @@ const auth = getAuth(firebase_app);
 
 export async function addFirstMessageToFirestore(
   message: ChatCompletionResponseMessage,
-  name?: string
+  responseTime: number
 ) {
+  const time = new Date().toLocaleString();
+  const messages = [{ ...message, responseTime, time }];
   const conversationsCollection = collection(db, "conversations");
   return await addDoc(conversationsCollection, {
-    message,
-    name,
+    messages,
     timestamp: Date.now(),
   });
 }
