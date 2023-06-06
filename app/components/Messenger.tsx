@@ -34,7 +34,10 @@ export default function Messenger({
     });
   }, []);
 
-  // TODO: rename variables more clearly
+  // Note(06/06/23): I want to decompose this function, but it relies on so many
+  // state variables that passing them around as arguments would probably make
+  // the code less readable. Maybe when I learn more about Context it'll be
+  // easier.
   async function submitUserInput(event?: React.FormEvent<HTMLFormElement>) {
     event?.preventDefault();
 
