@@ -1,16 +1,16 @@
 "use client";
 
 type UserInputProps = {
-  userMessage: string;
-  setUserMessage: React.Dispatch<React.SetStateAction<string>>;
-  submitUserMessage: (event?: React.FormEvent<HTMLFormElement>) => void;
+  userInput: string;
+  setUserInput: React.Dispatch<React.SetStateAction<string>>;
+  submitUserInput: (event?: React.FormEvent<HTMLFormElement>) => void;
   isLoadingResponse: boolean;
 };
 
 export default function UserInput({
-  userMessage,
-  setUserMessage,
-  submitUserMessage,
+  userInput,
+  setUserInput,
+  submitUserInput,
   isLoadingResponse,
 }: UserInputProps) {
   // If the user hits enter, submit the form
@@ -20,19 +20,19 @@ export default function UserInput({
   ) {
     if (event.key === "Enter" && !event.shiftKey && !isLoadingResponse) {
       event.preventDefault();
-      submitUserMessage();
+      submitUserInput();
     }
   }
 
   return (
     <form
       className="flex flex-row items-center space-x-4 p-4 outline"
-      onSubmit={submitUserMessage}
+      onSubmit={submitUserInput}
     >
       <textarea
         className="w-full font-mono outline"
-        value={userMessage}
-        onChange={({ target }) => setUserMessage(target.value)}
+        value={userInput}
+        onChange={({ target }) => setUserInput(target.value)}
         onKeyDown={attemptToSubmitOnEnter}
       ></textarea>
       <input
