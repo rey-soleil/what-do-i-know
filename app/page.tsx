@@ -8,8 +8,8 @@ import WelcomeDialog from "./components/WelcomeDialog";
 
 export default function Home() {
   // Uncomment this line for debugging purposes
-  // const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
-  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(true);
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+  // const [isDialogOpen, setIsDialogOpen] = useState<boolean>(true);
 
   const [name, setName] = useState<string>("");
 

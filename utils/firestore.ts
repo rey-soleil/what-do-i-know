@@ -14,6 +14,10 @@ import { ChatCompletionResponseMessage } from "openai";
 const db = getFirestore(firebase_app);
 const auth = getAuth(firebase_app);
 
+/*
+ * This creates a new object in the "conversations" collection in Firestore. Its
+ * "messages" field is an array of messages between the user and Ezra.
+ */
 export async function addFirstMessageToFirestore(
   message: ChatCompletionResponseMessage,
   responseTime: number
@@ -27,21 +31,29 @@ export async function addFirstMessageToFirestore(
   });
 }
 
+/*
+ * This appends the user's message and Ezra's response to the "messages" array
+ * of the object asssociated with firestoreId in the "conversations" collection
+ * of Firestore.
+ */
 export async function addMessagesToFirestore(
   newMessages: ChatCompletionResponseMessage[],
   firestoreId: string,
   responseTime: number
 ) {
-  const documentRef = doc(
-    collection(db, "continuing_conversations"),
-    firestoreId
-  );
+  const documentRef = doc(collection(db, "conversations"), firestoreId);
   try {
     const docSnapshot = await getDoc(documentRef);
     const existingMessages = docSnapshot.exists()
       ? docSnapshot.data().messages
       : [];
-    const mergedMessages = [...existingMessages, ...newMessages];
+      
+    // I want to include Ezra's response time in the latest message. This is my
+    // somewhat hacky way of doing so.
+    const mergedMessages = [
+      ...existingMessages,
+      ...newMessages.map((message) => ({ ...message })),
+    ];
     mergedMessages[mergedMessages.length - 1].responseTime = responseTime;
 
     await setDoc(

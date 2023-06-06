@@ -15,11 +15,11 @@ export async function fetchFirstMessage() {
     const end = Date.now();
     const responseTime = (end - start) / 1000;
 
-    const firestoreReponse = await addFirstMessageToFirestore(
+    const firestoreResponse = await addFirstMessageToFirestore(
       message,
       responseTime
     );
-    const firestoreId = firestoreReponse.id;
+    const firestoreId = firestoreResponse.id;
     return { message, firestoreId };
   } catch (error) {
     console.error(error);

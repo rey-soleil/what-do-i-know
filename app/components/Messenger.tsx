@@ -34,31 +34,32 @@ export default function Messenger({
     });
   }, []);
 
-  // TODO: refactor this so it's broken up into smaller functions
+  // TODO: rename variables more clearly
   async function submitUserMessage(event?: React.FormEvent<HTMLFormElement>) {
     event?.preventDefault();
 
-    let messagesWithUserInput = [
-      ...messages,
-      {
-        role: ChatCompletionResponseMessageRoleEnum.User,
-        content: userMessage,
-      },
-    ];
+    // Update messages to include userMessage
+    const userMessageObj = {
+      role: ChatCompletionResponseMessageRoleEnum.User,
+      content: userMessage,
+    };
+    let messagesWithUserInput = [...messages, userMessageObj];
     setMessages(messagesWithUserInput);
     setUserMessage("");
 
+    // Fetch Ezra's response to the user
     setIsLoadingResponse(true);
     const start = Date.now();
     const response = await fetchResponse(messagesWithUserInput);
-    const responseTime = Date.now() - start;
+    const responseTime = (Date.now() - start) / 1000;
     setIsLoadingResponse(false);
 
-    const messagesWithBoth = [...messagesWithUserInput, response];
+    // Update messages to include Ezra's response
     setMessages([...messagesWithUserInput, response]);
 
+    // Append userMessage and Ezra's response to firestore
     await addMessagesToFirestore(
-      messagesWithBoth.slice(-2),
+      [userMessageObj, response],
       firestoreId,
       responseTime
     );
