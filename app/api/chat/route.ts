@@ -57,7 +57,6 @@ export async function POST(request: Request) {
     role: ChatCompletionResponseMessageRoleEnum.System,
     content: QUESTION_REMINDER,
   });
-  console.log({ messages });
 
   try {
     const completion = await openai.createChatCompletion({
