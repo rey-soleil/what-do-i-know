@@ -26,11 +26,7 @@ export default function Home() {
         setIsDialogOpen={setIsDialogOpen}
       />
       <div className="h-full md:w-1/2 md:p-5">
-        <Messenger
-          setSummary={setSummary}
-          isDialogOpen={isDialogOpen}
-          name={name}
-        />
+        <Messenger setSummary={setSummary} />
       </div>
       <div className="hidden h-screen p-5 md:flex md:h-full md:w-1/2">
         <ReactFlowProvider>

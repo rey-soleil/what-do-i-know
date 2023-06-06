@@ -1,5 +1,6 @@
 "use client";
 
+import { getSummary } from "@/utils/fetch-openai-data";
 import { addMessagesToFirestore } from "@/utils/firestore";
 import { fetchFirstMessage, fetchResponse } from "@/utils/messenger";
 import {
@@ -12,14 +13,10 @@ import UserInput from "./UserInput";
 
 type MessengerProps = {
   setSummary: React.Dispatch<React.SetStateAction<string>>;
-  isDialogOpen: boolean;
-  name: string;
 };
 
 export default function Messenger({
   setSummary,
-  isDialogOpen,
-  name,
 }: MessengerProps) {
   const [userInput, setUserInput] = useState<string>("");
   const [messages, setMessages] = useState<ChatCompletionResponseMessage[]>([]);
@@ -58,7 +55,8 @@ export default function Messenger({
     setIsLoadingResponse(false);
 
     // Update messages to include Ezra's response
-    setMessages([...messagesWithUserInput, response]);
+    const newMessages = [...messagesWithUserInput, response];
+    setMessages(newMessages);
 
     // Append userInput and Ezra's response to firestore
     await addMessagesToFirestore(
@@ -66,6 +64,9 @@ export default function Messenger({
       firestoreId,
       responseTime
     );
+
+    const summary = await getSummary(newMessages);
+    setSummary(summary);
   }
 
   return (
