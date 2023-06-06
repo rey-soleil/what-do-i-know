@@ -47,7 +47,7 @@ export async function addMessagesToFirestore(
     const existingMessages = docSnapshot.exists()
       ? docSnapshot.data().messages
       : [];
-      
+
     // I want to include Ezra's response time in the latest message. This is my
     // somewhat hacky way of doing so.
     const mergedMessages = [
@@ -55,6 +55,8 @@ export async function addMessagesToFirestore(
       ...newMessages.map((message) => ({ ...message })),
     ];
     mergedMessages[mergedMessages.length - 1].responseTime = responseTime;
+    const time = new Date().toLocaleString();
+    mergedMessages[mergedMessages.length - 1].time = time;
 
     await setDoc(
       documentRef,
