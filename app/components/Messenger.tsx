@@ -21,7 +21,7 @@ export default function Messenger({
   isDialogOpen,
   name,
 }: MessengerProps) {
-  const [userMessage, setUserMessage] = useState<string>("");
+  const [userInput, setUserInput] = useState<string>("");
   const [messages, setMessages] = useState<ChatCompletionResponseMessage[]>([]);
   const [firestoreId, setFirestoreId] = useState<string>("");
   const [isLoadingResponse, setIsLoadingResponse] = useState<boolean>(true);
@@ -35,17 +35,17 @@ export default function Messenger({
   }, []);
 
   // TODO: rename variables more clearly
-  async function submitUserMessage(event?: React.FormEvent<HTMLFormElement>) {
+  async function submitUserInput(event?: React.FormEvent<HTMLFormElement>) {
     event?.preventDefault();
 
-    // Update messages to include userMessage
-    const userMessageObj = {
+    // Update messages to include userInput
+    const userMessage = {
       role: ChatCompletionResponseMessageRoleEnum.User,
-      content: userMessage,
+      content: userInput,
     };
-    let messagesWithUserInput = [...messages, userMessageObj];
+    let messagesWithUserInput = [...messages, userMessage];
     setMessages(messagesWithUserInput);
-    setUserMessage("");
+    setUserInput("");
 
     // Fetch Ezra's response to the user
     setIsLoadingResponse(true);
@@ -57,9 +57,9 @@ export default function Messenger({
     // Update messages to include Ezra's response
     setMessages([...messagesWithUserInput, response]);
 
-    // Append userMessage and Ezra's response to firestore
+    // Append userInput and Ezra's response to firestore
     await addMessagesToFirestore(
-      [userMessageObj, response],
+      [userMessage, response],
       firestoreId,
       responseTime
     );
@@ -69,9 +69,9 @@ export default function Messenger({
     <div className="flex h-full flex-col justify-between overflow-hidden bg-light-red outline">
       <ChatHistory messages={messages} isLoadingResponse={isLoadingResponse} />
       <UserInput
-        userMessage={userMessage}
-        setUserMessage={setUserMessage}
-        submitUserMessage={submitUserMessage}
+        userInput={userInput}
+        setUserInput={setUserInput}
+        submitUserInput={submitUserInput}
         isLoadingResponse={isLoadingResponse}
       />
     </div>
