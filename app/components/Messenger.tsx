@@ -1,8 +1,8 @@
 "use client";
 
-import { getSummary } from "@/utils/fetch-openai-data";
+import { getResponse, getSummary } from "@/utils/fetch-openai-data";
 import { addMessagesToFirestore } from "@/utils/firestore";
-import { fetchFirstMessage, fetchResponse } from "@/utils/messenger";
+import { fetchFirstMessage } from "@/utils/messenger";
 import {
   ChatCompletionResponseMessage,
   ChatCompletionResponseMessageRoleEnum,
@@ -15,9 +15,7 @@ type MessengerProps = {
   setSummary: React.Dispatch<React.SetStateAction<string>>;
 };
 
-export default function Messenger({
-  setSummary,
-}: MessengerProps) {
+export default function Messenger({ setSummary }: MessengerProps) {
   const [userInput, setUserInput] = useState<string>("");
   const [messages, setMessages] = useState<ChatCompletionResponseMessage[]>([]);
   const [firestoreId, setFirestoreId] = useState<string>("");
@@ -50,7 +48,7 @@ export default function Messenger({
     // Fetch Ezra's response to the user
     setIsLoadingResponse(true);
     const start = Date.now();
-    const response = await fetchResponse(messagesWithUserInput);
+    const response = await getResponse(messagesWithUserInput);
     const responseTime = (Date.now() - start) / 1000;
     setIsLoadingResponse(false);
 
