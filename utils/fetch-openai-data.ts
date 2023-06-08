@@ -4,6 +4,8 @@ import {
   CreateChatCompletionResponse,
 } from "openai";
 
+// This function fetches Ezra's response to the user's message.
+// It retries up to 3 times if there is an error.
 export async function getResponse(messages: ChatCompletionResponseMessage[]) {
   const maxRetries = 3;
   let retryCount = 0;
@@ -42,6 +44,9 @@ export async function getSummary(messages: ChatCompletionResponseMessage[]) {
 
   while (retryCount < maxRetries) {
     try {
+      // TODO: uncomment this after debugging. I want to see whether it will
+      // query the API again after 5 seconds.
+      await sleep(5000);
       const agentResponse: CreateChatCompletionResponse = await fetch(
         "/api/summary",
         {
