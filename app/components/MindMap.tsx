@@ -16,6 +16,10 @@ export default function MindMap({ summary }: MindMapProps) {
   const topics = useMemo(() => summary.split("|"), [summary]);
   const reactFlowInstance = useReactFlow();
 
+  useEffect(() => {
+    window.addEventListener("resize", () => reactFlowInstance.fitView(), false);
+  }, []);
+
   let numCols = Math.ceil(Math.sqrt(topics.length));
 
   const nodes = useMemo(() => {
