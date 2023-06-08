@@ -12,7 +12,6 @@ export async function getResponse(messages: ChatCompletionResponseMessage[]) {
 
   while (retryCount < maxRetries) {
     try {
-      await sleep(5000);
       const agentResponse: CreateChatCompletionResponse = await fetch(
         "/api/chat",
         {
