@@ -48,7 +48,9 @@ export default function ChatHistory({
           )}
           {message?.role === ChatCompletionResponseMessageRoleEnum.User && (
             <div className="max-w-[90%] bg-orange-yellow p-2 font-mono font-medium outline">
-              {message.content}
+              {message.content.split("\n").map((line, i) => (
+                <div key={i}>{line}</div>
+              ))}
             </div>
           )}
         </div>

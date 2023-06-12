@@ -24,10 +24,11 @@ export default function EzraMessage({ message }: EzraMessageProps) {
       {message && (
         <Typewriter
           onInit={(typewriter) => {
+            const content = message?.content.replaceAll("\n", "<br/>");
             typewriter
               .start()
               .changeDelay(10)
-              .typeString(message?.content || "")
+              .typeString(content || "")
               .callFunction(() => {
                 document.querySelector(".Typewriter__cursor")?.remove();
                 setShowFeedback(true);
