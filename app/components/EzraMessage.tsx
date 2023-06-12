@@ -1,5 +1,9 @@
 import { ChatCompletionResponseMessage } from "openai";
-import Typewriter from "typewriter-effect";
+import { useState } from "react";
+import {
+  default as Typewriter,
+  default as TypewriterComponent,
+} from "typewriter-effect";
 import Feedback from "./Feedback";
 
 type EzraMessageProps = {
@@ -12,22 +16,26 @@ type EzraMessageProps = {
  * fetching Ezra's message), then we just show the typing cursor.
  */
 export default function EzraMessage({ message }: EzraMessageProps) {
+  const [showFeedback, setShowFeedback] = useState(false);
+
   return (
     <div className="relative max-w-[90%] bg-cornsilk p-2 font-mono font-medium outline">
+      {!message && <TypewriterComponent />}
       {message && (
         <Typewriter
           onInit={(typewriter) => {
             typewriter
-              .changeDelay(25)
-              .typeString(message.content)
               .start()
+              .changeDelay(10)
+              .typeString(message?.content || "")
               .callFunction(() => {
                 document.querySelector(".Typewriter__cursor")?.remove();
+                setShowFeedback(true);
               });
           }}
         />
       )}
-      {message && <Feedback message={message} />}
+      {message && showFeedback && <Feedback message={message} />}
     </div>
   );
 }
