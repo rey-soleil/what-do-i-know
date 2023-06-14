@@ -1,5 +1,6 @@
 "use client";
 
+import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { ReactFlowProvider } from "reactflow";
 import Messenger from "./components/Messenger";
@@ -7,6 +8,8 @@ import MindMap from "./components/MindMap";
 import WelcomeDialog from "./components/WelcomeDialog";
 
 export default function Home() {
+  const { data: session } = useSession({ required: true });
+
   // Uncomment this line for debugging purposes
   // const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(true);
