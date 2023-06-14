@@ -1,6 +1,7 @@
 "use client";
 
 import { useSession } from "next-auth/react";
+import { redirect } from "next/navigation";
 import { useState } from "react";
 import { ReactFlowProvider } from "reactflow";
 import Messenger from "./components/Messenger";
@@ -8,7 +9,12 @@ import MindMap from "./components/MindMap";
 import WelcomeDialog from "./components/WelcomeDialog";
 
 export default function Home() {
-  const { data: session } = useSession({ required: true });
+  const { data: session } = useSession({
+    required: true,
+    onUnauthenticated() {
+      redirect("/signin");
+    },
+  });
 
   // Uncomment this line for debugging purposes
   // const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
